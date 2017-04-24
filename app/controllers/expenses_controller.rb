@@ -7,7 +7,7 @@ class ExpensesController < ApplicationController
     respond_with Expense.all
   end
   
-  # GET /expenses/id(id user)
+  # GET /expenses/(id user)
   def show
     respond_with Expense.find(params[:id])
     
@@ -23,15 +23,26 @@ class ExpensesController < ApplicationController
     end
   end
   
-  #
+  # PUT /expenses/(id user)
   def update
-    
-    
+
+    expense = Expense.find(params[:id])
+    if expense.update(expenses_params)
+      render json: expense, status: :accepted
+    else
+      render json: expense.errors, status: :unprocesable_entity
     end
+      
+  end
   
-  #
+  # DELETE /expenses/(id user)
   def destroy
-    
+    expense = Expense.find(params[:id])
+    if expense.destroy
+      render json: { message: "The expense was deleted successfully" }, status: :no_content
+    else
+      render json: expense.errors, status: :unprocesable_entity   
+    end 
    
   end
   
