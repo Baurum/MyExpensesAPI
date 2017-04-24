@@ -1,5 +1,6 @@
 class ExpensesController < ApplicationController
   respond_to :json
+   skip_before_action :verify_authenticity_token
   
  # GET /expenses
   def index
@@ -14,10 +15,13 @@ class ExpensesController < ApplicationController
   
   # POST /expenses
   def create
-    logger.debug params
-    logger.debug params[:amount]
-    
+     expense = Expense.new(expenses_params)
+    if expense.save
+      render json: expense, status: :created
+    else 
+      render json: expense.errors, status: :unprocesable_entity
     end
+  end
   
   #
   def update
@@ -30,5 +34,11 @@ class ExpensesController < ApplicationController
     
    
   end
+  
+  private 
+    def expenses_params
+      params.require(:expense).permit(:amount, :concept)
+    end
+  
   
 end
